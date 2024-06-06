@@ -41,8 +41,6 @@ class SpamData(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         label = self.file.iloc[idx, 0]
-        if label == 'spam':
-            label = 'ham'
         label = self.dict.Word2Idx(label)
         text = [0] * self.max_size
         text_tmp = self.file.iloc[idx, 1]
