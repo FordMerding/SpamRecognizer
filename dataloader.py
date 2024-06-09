@@ -8,7 +8,7 @@ class Tokenizer:
         self.wrd = []
         self.wrd2idx = {}
         self.idx2wrd = {}
-        self.last = 0
+        self.last = -1
     def addWord(self, word):
         if(word in self.wrd):
             print("The word is already in the dictionary. Stupid monkey >:(")
@@ -32,9 +32,6 @@ class SpamData(Dataset):
         self.dict = dict
         self.pattern = r'[^a-zA-Z0-9\s]'
         self.max_size = max_size
-        self.dict.addWord(" ")
-        self.dict.addWord("spam")
-        self.dict.addWord("ham")
     def __len__(self):
         return len(self.file)
     def __getitem__(self, idx):
@@ -42,14 +39,14 @@ class SpamData(Dataset):
             idx = idx.tolist()
         label = self.file.iloc[idx, 0]
         label = self.dict.Word2Idx(label)
-        text = [0] * self.max_size
+        text = [-1] * self.max_size
         text_tmp = self.file.iloc[idx, 1]
         text_tmp = re.sub(self.pattern, '', text_tmp)
         text_tmp = text_tmp.split()
         for i in range(len(text_tmp)):
             text[i] = self.dict.Word2Idx(text_tmp[i])
         text = torch.tensor(text, dtype=torch.float)
-        sample = (text, label-1)
+        sample = (text, label)
         return sample
     def get(self):
         return self.dict
